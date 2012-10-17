@@ -42,7 +42,7 @@ var (
 )
 
 func main() {
-    file, e := ioutil.ReadFile("../QSOs.json")
+    file, e := ioutil.ReadFile(qsoFile)
     if e != nil {
         fmt.Printf("File error: %v\n", e)
         os.Exit(1)
@@ -51,11 +51,11 @@ func main() {
     json.Unmarshal(file, &jsontype)
 
     http.Handle("/convertedCards/", http.StripPrefix("/convertedCards",
-        http.FileServer(http.Dir(path.Join(rootdir, "../convertedCards/")))))
+        http.FileServer(http.Dir(path.Join(rootdir, convertedFolder)))))
     http.Handle("/cards/", http.StripPrefix("/cards",
-        http.FileServer(http.Dir(path.Join(rootdir, "../cards/")))))
+        http.FileServer(http.Dir(path.Join(rootdir, cardsFolder)))))
     http.Handle("/images/", http.StripPrefix("/images",
-        http.FileServer(http.Dir(path.Join(rootdir, "../images/")))))
+        http.FileServer(http.Dir(path.Join(rootdir, imagesFolder)))))
 
     http.HandleFunc("/", index)
     http.HandleFunc("/view/", displayCard)
