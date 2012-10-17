@@ -9,5 +9,3 @@ to allow people to take their digitized QSL cards and view them easily.
 
 More documentation on how to use this program as well as updates to it to make it easier for everybody
 to use is coming soon.
-
-As of right now this code is provided AS IS.
