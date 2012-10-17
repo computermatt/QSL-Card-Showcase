@@ -52,6 +52,8 @@ func main() {
 
     http.Handle("/convertedCards/", http.StripPrefix("/convertedCards",
         http.FileServer(http.Dir(path.Join(rootdir, convertedFolder)))))
+    http.Handle("/resizedCards/", http.StripPrefix("/resizedCards",
+	http.FileServer(http.Dir(path.Join(rootdir, resizedFolder)))))
     http.Handle("/cards/", http.StripPrefix("/cards",
         http.FileServer(http.Dir(path.Join(rootdir, cardsFolder)))))
     http.Handle("/images/", http.StripPrefix("/images",
