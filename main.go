@@ -27,7 +27,7 @@ import (
     "path"
 )
 
-type jsonobject struct {
+type qslObject struct {
     Callsign   string
     Date   string
     Front_image   string
@@ -35,9 +35,8 @@ type jsonobject struct {
     Mode   string
     Frequency string
 }
-
 var (
-    jsontype []jsonobject
+    qsls []qslObject
     rootdir, _ = os.Getwd()
 )
 
@@ -48,7 +47,7 @@ func main() {
         os.Exit(1)
     }
 
-    json.Unmarshal(file, &jsontype)
+    json.Unmarshal(file, &qsls)
 
     http.Handle("/convertedCards/", http.StripPrefix("/convertedCards",
         http.FileServer(http.Dir(path.Join(rootdir, convertedFolder)))))
