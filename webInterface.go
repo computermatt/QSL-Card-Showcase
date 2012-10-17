@@ -2,25 +2,8 @@ package main
 
 import (
     "fmt"
-    "os"
-    "encoding/json"
-    "io/ioutil"
     "net/http"
     "path"
-)
-
-type jsonobject struct {
-    Callsign   string
-    Date   string
-    Front_image   string
-    Back_image   string
-    Mode   string
-    Frequency string
-}
-
-var (
-    jsontype []jsonobject
-    rootdir, _ = os.Getwd()
 )
 
 func index(w http.ResponseWriter, r *http.Request) {
@@ -52,14 +35,7 @@ func displayCard(w http.ResponseWriter, r *http.Request) {
 }
 
 
-func main() {
-    file, e := ioutil.ReadFile("../QSOs.json")
-    if e != nil {
-        fmt.Printf("File error: %v\n", e)
-        os.Exit(1)
-    }
-
-    json.Unmarshal(file, &jsontype)
+func startWebServer() {
 
     http.Handle("/convertedCards/", http.StripPrefix("/convertedCards",
         http.FileServer(http.Dir(path.Join(rootdir, "../convertedCards/")))))
@@ -71,6 +47,7 @@ func main() {
     http.HandleFunc("/", index)
     http.HandleFunc("/view/", displayCard)
     fmt.Printf("http server started\n\n")
+
     http.ListenAndServe(":8080", nil)
 }
 
