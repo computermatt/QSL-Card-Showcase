@@ -25,10 +25,10 @@ import (
 
 func index(w http.ResponseWriter, r *http.Request) {
     fmt.Fprintf(w, "<title>" + callsign + " QSL Cards</title>")
-    fmt.Fprintf(w, "<style> h1 { text-align:center;}</style><h1><img src=\"" + imagesFolder + logoFileName + "\" width=480 height=120></img></br>QSL Cards</h1></br>")
+    fmt.Fprintf(w, "<div style=\"text-align:center\"><h1><img src=\"" + imagesFolder + logoFileName + "\" width=480 height=120></img></br>QSL Cards</h1></br></div>")
     for i := 0; i < len(qsls); i++ {
 	var call string = qsls[i].Callsign
-	fmt.Fprintf(w, "<a href=/view/"+call +">" + call + "</a>  <img src=\"../resizedCards/" + qsls[i].Front_image + convertedType + "\" width=100 height=60></img>  <img src=\"../resizedCards/" + qsls[i].Back_image + convertedType + "\" width=100 height=60></img></br>")
+	fmt.Fprintf(w, "<div style=\"text-align:center\"><a href=/view/"+ call +">" + call + "</a></br><img src=\"../resizedCards/" + qsls[i].Front_image + convertedType + "\" width=100 height=60></img>  <img src=\"../resizedCards/" + qsls[i].Back_image + convertedType + "\" width=100 height=60></img></br></br></div>" )
     }
 }
 

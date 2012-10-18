@@ -31,6 +31,8 @@ func apiGetCall(w http.ResponseWriter, r *http.Request) {
 	    api_Callsign(w, r.URL.Path[18:])
 	case strings.Contains(function, "qso/year"):
 	    api_Year(w, r.URL.Path[14:])
+	case strings.Contains(function, "qso/mode"):
+	    api_Mode(w, r.URL.Path[14:])
 	default:
 	    fmt.Fprintf(w, "hello")
 
@@ -59,7 +61,7 @@ func api_Year(w http.ResponseWriter, year string) {
     qsoList := make([]qslObject, 0)
     foundContacts := false
     for i := 0; i < len(qsls); i++ {
-	if strings.Contains(qsls[i].Date, year) {
+	if strings.Contains(strings.ToUpper(qsls[i].Date), strings.ToUpper(year)) {
 	    foundContacts = true
 	    qsoList = append(qsoList, qsls[i])
 	}
@@ -68,6 +70,22 @@ func api_Year(w http.ResponseWriter, year string) {
 	api_convertToJson(w, qsoList)
     } else {
 	fmt.Fprintf(w, "error")
+    }
+}
+
+func api_Mode(w http.ResponseWriter, mode string) {
+    qsoList := make([]qslObject, 0)
+    foundContacts := false
+    for i := 0; i < len(qsls); i++ {
+        if strings.Contains(strings.ToUpper(qsls[i].Mode), strings.ToUpper(mode)) {
+            foundContacts = true
+            qsoList = append(qsoList, qsls[i])
+        }
+    }
+    if foundContacts {
+        api_convertToJson(w, qsoList)
+    } else {
+        fmt.Fprintf(w, "error")
     }
 }
 
