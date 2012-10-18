@@ -20,8 +20,60 @@ package main
 import (
     "fmt"
     "net/http"
+    "strings"
+    "encoding/json"
 )
 
 func apiGetCall(w http.ResponseWriter, r *http.Request) {
-    fmt.Fprintf(w, "Hello world")
+    var function = r.URL.Path[5:]
+    switch true {
+	case strings.Contains(function, "qso/callsign"):
+	    api_Callsign(w, r.URL.Path[18:])
+	case strings.Contains(function, "qso/year"):
+	    api_Year(w, r.URL.Path[14:])
+	default:
+	    fmt.Fprintf(w, "hello")
+
+    }
+}
+
+func api_Callsign(w http.ResponseWriter, call string) {
+    call = strings.ToUpper(call)
+    qsoList := make([]qslObject, 0)
+    foundCall := false
+    for i := 0; i < len(qsls); i++ {
+	if qsls[i].Callsign == call {
+	    foundCall = true
+	    qsoList = append(qsoList, qsls[i])
+	}
+
+    }
+    if foundCall {
+	api_convertToJson(w, qsoList)
+    } else {
+	fmt.Fprintf(w, "error")
+    }
+}
+
+func api_Year(w http.ResponseWriter, year string) {
+    qsoList := make([]qslObject, 0)
+    foundContacts := false
+    for i := 0; i < len(qsls); i++ {
+	if strings.Contains(qsls[i].Date, year) {
+	    foundContacts = true
+	    qsoList = append(qsoList, qsls[i])
+	}
+    }
+    if foundContacts {
+	api_convertToJson(w, qsoList)
+    } else {
+	fmt.Fprintf(w, "error")
+    }
+}
+
+func api_convertToJson(w http.ResponseWriter, qsoList []qslObject) {
+    qsosJson, err := json.Marshal(qsoList)
+    if err == nil {
+	fmt.Fprintf(w, string(qsosJson))
+    }
 }
