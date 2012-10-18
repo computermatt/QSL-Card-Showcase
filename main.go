@@ -62,6 +62,7 @@ func main() {
     http.HandleFunc("/view/", displayCard)
     http.HandleFunc("/api/", apiGetCall)
 
+
     fmt.Printf("Web Server started\n")
     http.ListenAndServe(":8080", nil)
 

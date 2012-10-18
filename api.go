@@ -22,6 +22,7 @@ import (
     "net/http"
     "strings"
     "encoding/json"
+    "strconv"
 )
 
 func apiGetCall(w http.ResponseWriter, r *http.Request) {
@@ -33,6 +34,14 @@ func apiGetCall(w http.ResponseWriter, r *http.Request) {
 	    api_Year(w, r.URL.Path[14:])
 	case strings.Contains(function, "qso/mode"):
 	    api_Mode(w, r.URL.Path[14:])
+	case strings.Contains(function, "qso/fullImage"):
+	    api_FullImage(w, r, r.URL.Path[19:])
+	case strings.Contains(function, "qso/compressedImage"):
+	    api_CompressedImage(w, r, r.URL.Path[25:])
+	case strings.Contains(function, "qso/thumbnailImage"):
+	    api_ThumbnailImage(w, r, r.URL.Path[24:])
+	case strings.Contains(function, "qso/inBand"):
+	    api_Band(w, r.URL.Path[16:])
 	default:
 	    fmt.Fprintf(w, "hello")
 
@@ -86,6 +95,35 @@ func api_Mode(w http.ResponseWriter, mode string) {
         api_convertToJson(w, qsoList)
     } else {
         fmt.Fprintf(w, "error")
+    }
+}
+
+func api_FullImage(w http.ResponseWriter, r *http.Request, imageName string) {
+    http.ServeFile(w, r, "../cards/" + imageName + fullType)
+}
+
+func api_CompressedImage(w http.ResponseWriter, r *http.Request, imageName string) {
+    http.ServeFile(w, r, "../convertedCards/" + imageName + convertedType)
+}
+
+func api_ThumbnailImage(w http.ResponseWriter, r *http.Request, imageName string) {
+    http.ServeFile(w, r, "../resizedCards/" + imageName + convertedType)
+}
+
+func api_Band(w http.ResponseWriter, band string) {
+    qsoList := make([]qslObject, 0)
+    foundContacts := false
+    for i := 0; i < len(qsls); i++ {
+	freq, err := strconv.ParseFloat(qsls[i].Frequency, 64)
+	if (freq <= bandPlan[band].upper) && (freq >= bandPlan[band].lower) && (err == nil) {
+	    foundContacts = true
+	    qsoList = append(qsoList, qsls[i])
+	}
+    }
+    if foundContacts {
+	api_convertToJson(w, qsoList)
+    } else {
+	fmt.Fprintf(w, "error")
     }
 }
 
