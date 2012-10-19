@@ -2,9 +2,9 @@ package main
 
 const (
     qsoFile = "../QSOs.json"
-    convertedFolder = "../convertedCards/"
+    convertedFolder = "../compressedCards/"
     cardsFolder = "../cards/"
-    resizedFolder = "../resizedCards/"
+    resizedFolder = "../thumbnails/"
     imagesFolder = "../images/"
     callsign = "K2GXT"
     logoFileName = "k2logo.jpg"

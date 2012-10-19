@@ -43,7 +43,7 @@ func apiGetCall(w http.ResponseWriter, r *http.Request) {
 	case strings.Contains(function, "qso/inBand"):
 	    api_Band(w, r.URL.Path[16:])
 	default:
-	    fmt.Fprintf(w, "hello")
+	    fmt.Fprintf(w, "error")
 
     }
 }
@@ -99,15 +99,15 @@ func api_Mode(w http.ResponseWriter, mode string) {
 }
 
 func api_FullImage(w http.ResponseWriter, r *http.Request, imageName string) {
-    http.ServeFile(w, r, "../cards/" + imageName + fullType)
+    http.ServeFile(w, r, cardsFolder + imageName + fullType)
 }
 
 func api_CompressedImage(w http.ResponseWriter, r *http.Request, imageName string) {
-    http.ServeFile(w, r, "../convertedCards/" + imageName + convertedType)
+    http.ServeFile(w, r, convertedFolder + imageName + convertedType)
 }
 
 func api_ThumbnailImage(w http.ResponseWriter, r *http.Request, imageName string) {
-    http.ServeFile(w, r, "../resizedCards/" + imageName + convertedType)
+    http.ServeFile(w, r, resizedFolder + imageName + convertedType)
 }
 
 func api_Band(w http.ResponseWriter, band string) {

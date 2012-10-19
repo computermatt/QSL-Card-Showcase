@@ -28,7 +28,7 @@ func index(w http.ResponseWriter, r *http.Request) {
     fmt.Fprintf(w, "<div style=\"text-align:center\"><h1><img src=\"" + imagesFolder + logoFileName + "\" width=480 height=120></img></br>QSL Cards</h1></br></div>")
     for i := 0; i < len(qsls); i++ {
 	var call string = qsls[i].Callsign
-	fmt.Fprintf(w, "<div style=\"text-align:center\"><a href=/view/"+ call +">" + call + "</a></br><img src=\"../resizedCards/" + qsls[i].Front_image + convertedType + "\" width=100 height=60></img>  <img src=\"../resizedCards/" + qsls[i].Back_image + convertedType + "\" width=100 height=60></img></br></br></div>" )
+	fmt.Fprintf(w, "<div style=\"text-align:center\"><a href=/view/"+ call +">" + call + "</a></br><img src=\"" + resizedFolder + qsls[i].Front_image + convertedType + "\" width=100 height=60></img>  <img src=\"" + resizedFolder + qsls[i].Back_image + convertedType + "\" width=100 height=60></img></br></br></div>" )
     }
 }
 
@@ -42,12 +42,12 @@ func displayCard(w http.ResponseWriter, r *http.Request) {
 	    fmt.Fprintf(w, "Date: " + qsls[i].Date)
 	    fmt.Fprintf(w, "</br>Mode: " + qsls[i].Mode)
 	    fmt.Fprintf(w, "</br>Frequency: " + qsls[i].Frequency)
-	    var fileName string = "../convertedCards/" + qsls[i].Front_image
+	    var fileName string = convertedFolder+ qsls[i].Front_image
 	    fmt.Fprintf(w, "</br></br>Front:</br><img src=\"" + fileName + convertedType + "\" width=480 height=320 ></img>")
-	    fmt.Fprintf(w, "</br><a href=../cards/" + qsls[i].Front_image + fullType + "> Download full sized image </a>")
-	    var backName string = "../../convertedCards/" + qsls[i].Back_image
+	    fmt.Fprintf(w, "</br><a href=" + cardsFolder + qsls[i].Front_image + fullType + "> Download full sized image </a>")
+	    var backName string = "../" + convertedFolder + qsls[i].Back_image
 	    fmt.Fprintf(w, "</br></br>Back:</br><img src=\"" + backName + convertedType + "\" width=480 height=320></img>")
-	    fmt.Fprintf(w, "</br><a href=../../cards/" + qsls[i].Back_image + fullType + "> Download full sized image </a>")
+	    fmt.Fprintf(w, "</br><a href=../" + cardsFolder + qsls[i].Back_image + fullType + "> Download full sized image </a>")
 	}
     }
 }

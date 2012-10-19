@@ -49,9 +49,9 @@ func main() {
 
     json.Unmarshal(file, &qsls)
 
-    http.Handle("/convertedCards/", http.StripPrefix("/convertedCards",
+    http.Handle("/compressedCards/", http.StripPrefix("/compressedCards",
         http.FileServer(http.Dir(path.Join(rootdir, convertedFolder)))))
-    http.Handle("/resizedCards/", http.StripPrefix("/resizedCards",
+    http.Handle("/thumbnails/", http.StripPrefix("/thumbnails",
 	http.FileServer(http.Dir(path.Join(rootdir, resizedFolder)))))
     http.Handle("/cards/", http.StripPrefix("/cards",
         http.FileServer(http.Dir(path.Join(rootdir, cardsFolder)))))
