@@ -21,15 +21,34 @@ package main
 import (
     "fmt"
     "net/http"
+    "strconv"
 )
 
 func index(w http.ResponseWriter, r *http.Request) {
+    var startCard , _  = strconv.ParseInt(r.URL.Path[1:], 0, 0)
     fmt.Fprintf(w, "<title>" + callsign + " QSL Cards</title>")
     fmt.Fprintf(w, "<div style=\"text-align:center\"><h1><img src=\"" + imagesFolder + logoFileName + "\" width=480 height=120></img></br>QSL Cards</h1></br></div>")
-    for i := 0; i < len(qsls); i++ {
-	var call string = qsls[i].Callsign
-	fmt.Fprintf(w, "<div style=\"text-align:center\"><a href=/view/"+ call +">" + call + "</a></br><img src=\"" + resizedFolder + qsls[i].Front_image + convertedType + "\" width=100 height=60></img>  <img src=\"" + resizedFolder + qsls[i].Back_image + convertedType + "\" width=100 height=60></img></br></br></div>" )
+    var endCard int = int(startCard) + 20
+    if endCard > len(qsls) {
+	endCard = len(qsls)
     }
+    var numInRow int = 0
+    fmt.Fprintf(w, "<table boarder=\"1\" align=\"center\"><tr>")
+    for i := int(startCard); i < endCard; i++ {
+	var call string = qsls[i].Callsign
+	fmt.Fprintf(w, "<td><div style=\"text-align:center\"><a href=/view/"+ call +">" + call + "</a></br><img src=\"" + resizedFolder + qsls[i].Front_image + convertedType + "\" width=100 height=60></img>  <img src=\"" + resizedFolder + qsls[i].Back_image + convertedType + "\" width=100 height=60></img></div><p>     </p></td>" )
+	if numInRow == 3 {
+	    fmt.Fprintf(w, "</tr><tr>")
+	    numInRow = 0
+	} else {
+	    numInRow++
+	}
+    }
+    var newStart int = int(startCard) - 20
+    if newStart <= 0 {
+	newStart = 0
+    }
+    fmt.Fprintf(w, "</table><div style=\"text-align:center\"><a href=/" + strconv.Itoa(newStart) + ">Back</a>   <a href=/" + strconv.Itoa(endCard) + ">Next</a>")
 }
 
 func displayCard(w http.ResponseWriter, r *http.Request) {
