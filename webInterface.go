@@ -48,25 +48,26 @@ func index(w http.ResponseWriter, r *http.Request) {
     if newStart <= 0 {
 	newStart = 0
     }
-    fmt.Fprintf(w, "</table><div style=\"text-align:center\"><a href=/" + strconv.Itoa(newStart) + ">Back</a>   <a href=/" + strconv.Itoa(endCard) + ">Next</a>")
+    fmt.Fprintf(w, "<tr><td><div style=\"text-align:left\"><a href=/" + strconv.Itoa(newStart) + ">Back</a></div></td><td></td><td></td><td>  <div style=\"text-align:right\"> <a href=/" + strconv.Itoa(endCard) + ">Next</a></td></tr></table>")
 }
 
 func displayCard(w http.ResponseWriter, r *http.Request) {
     var callToCheck string = r.URL.Path[6:]
     fmt.Fprintf(w, "<title>" + callToCheck + "</title>")
-    fmt.Fprintf(w, "<img src=\"" + imagesFolder + logoFileName + "\" width=320 height=80></img>")
+    fmt.Fprintf(w, "<div style=\"text-align:center\"><img src=\"" + imagesFolder + logoFileName + "\" width=320 height=80></img>")
     for i := 0; i < len(qsls); i++ {
 	if qsls[i].Callsign == callToCheck {
-	    fmt.Fprintf(w, "<h1>" + qsls[i].Callsign + "</h1></br>")
-	    fmt.Fprintf(w, "Date: " + qsls[i].Date)
+	    fmt.Fprintf(w, "<u><h1>" + qsls[i].Callsign + "</h1></u>")
+	    fmt.Fprintf(w, "<b>Date: " + qsls[i].Date)
 	    fmt.Fprintf(w, "</br>Mode: " + qsls[i].Mode)
-	    fmt.Fprintf(w, "</br>Frequency: " + qsls[i].Frequency)
+	    fmt.Fprintf(w, "</br>Frequency: " + qsls[i].Frequency + "</b>")
 	    var fileName string = convertedFolder+ qsls[i].Front_image
-	    fmt.Fprintf(w, "</br></br>Front:</br><img src=\"" + fileName + convertedType + "\" width=480 height=320 ></img>")
-	    fmt.Fprintf(w, "</br><a href=" + cardsFolder + qsls[i].Front_image + fullType + "> Download full sized image </a>")
+	    fmt.Fprintf(w, "</br><table boarder=\"1\" align=\"center\"><tr><td><img src=\"" + fileName + convertedType + "\" width=480 height=320 ></img>")
+	    fmt.Fprintf(w, "</br><div style=\"text-align:center\"><a href=" + cardsFolder + qsls[i].Front_image + fullType + "> Download full sized image </a></div></td><td>")
 	    var backName string = "../" + convertedFolder + qsls[i].Back_image
-	    fmt.Fprintf(w, "</br></br>Back:</br><img src=\"" + backName + convertedType + "\" width=480 height=320></img>")
-	    fmt.Fprintf(w, "</br><a href=../" + cardsFolder + qsls[i].Back_image + fullType + "> Download full sized image </a>")
+	    fmt.Fprintf(w, "<img src=\"" + backName + convertedType + "\" width=480 height=320></img>")
+	    fmt.Fprintf(w, "</br><div style=\"text-align:center\"><a href=../" + cardsFolder + qsls[i].Back_image + fullType + "> Download full sized image </a></div></td></tr>")
+	    fmt.Fprintf(w, "</table></br>")
 	}
     }
 }
