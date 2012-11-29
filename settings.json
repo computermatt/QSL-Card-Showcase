@@ -1,0 +1,11 @@
+{
+	"qsoFile"       : "../QSOs.json",
+	"convertedFolder" : "../compressedCards/",
+	"cardsFolder"     : "../cards/",
+	"resizedFolder"   : "../thumbnails/",
+	"imagesFolder"  : "../images/",
+	"callsign"        : "K2GXT",
+	"logoFileName"    : "k2logo.jpg",
+	"convertedType"   : ".jpg",
+	"fullType"        : ".tiff"	
+}
