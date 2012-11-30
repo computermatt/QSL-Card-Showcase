@@ -68,7 +68,7 @@ func browse(w http.ResponseWriter, r *http.Request) {
 func browseCountry(w http.ResponseWriter, r *http.Request) {
 	var cardsForCountry = listOfContactsPerCountry[strings.ToUpper(r.URL.Path[9:])]
 	fmt.Fprintf(w, "<title>"+callsign+" QSL Cards</title>")
-	fmt.Fprintf(w, "<div style=\"text-align:center\"><h1><a href=/><img src=\""+imagesFolder+logoFileName+"\" width=480 height=120></a></img></br>QSL Cards</h1></br></div>")
+	fmt.Fprintf(w, "<div style=\"text-align:center\"><h1><a href=/><img src=\""+imagesFolder+logoFileName+"\" width=480 height=120></a></img></br>QSL Cards from "+r.URL.Path[9:]+"</h1></br></div>")
 
 	var numInRow int = 0
 	fmt.Fprintf(w, "<table boarder=\"1\" align=\"center\"><tr>")
