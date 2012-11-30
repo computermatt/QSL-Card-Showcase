@@ -31,13 +31,16 @@ type qslObject struct {
 }
 
 var (
-	qsls       []qslObject
-	rootdir, _ = os.Getwd()
+	qsls                     []qslObject
+	rootdir, _               = os.Getwd()
+	listOfContactedCountries []string
+	listOfContactsPerCountry map[string][]qslObject
 )
 
 func main() {
 	parseConstants()
 	PrefixLookup.LoadPrefixes()
+
 	file, e := ioutil.ReadFile(qsoFile)
 	if e != nil {
 		fmt.Printf("File error: %v\n", e)
@@ -46,6 +49,8 @@ func main() {
 
 	json.Unmarshal(file, &qsls)
 
+	listOfContactedCountries = getListOfCountries()
+	listOfContactsPerCountry = getContactsPerCountry()
 	http.Handle("/compressedCards/", http.StripPrefix("/compressedCards",
 		http.FileServer(http.Dir(path.Join(rootdir, convertedFolder)))))
 	http.Handle("/thumbnails/", http.StripPrefix("/thumbnails",
@@ -57,6 +62,7 @@ func main() {
 
 	http.HandleFunc("/", index)
 	http.HandleFunc("/browse/", browse)
+	http.HandleFunc("/country/", browseCountry)
 	http.HandleFunc("/view/", displayCard)
 	http.HandleFunc("/api/", apiGetCall)
 

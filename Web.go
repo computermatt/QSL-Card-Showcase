@@ -25,34 +25,17 @@ func index(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "<div style=\"text-align:center\"><h1><a href=/><img src=\""+imagesFolder+logoFileName+"\" width=480 height=120></a></img></br>QSL Cards</h1></br></div>")
 	fmt.Fprintf(w, "<center><b><a href=/browse>Browse QSL Cards</a></b></center>")
 
-	fmt.Fprintf(w, "</br></br><center>Select Country: <select>")
-	for _, element := range getListOfCountries() {
+	fmt.Fprintf(w, "</br></br><script> function disp_text() { var selected_text = document.countryForm.countryList.options[document.countryForm.countryList.selectedIndex].text; window.location.href = \"/country/\" + selected_text; } </script><center>Select Country: <form name=\"countryForm\"><select name=\"countryList\" onChange=\"disp_text()\">")
+	for _, element := range listOfContactedCountries {
 		fmt.Fprintf(w, "<option>"+element+"</option>")
 	}
 
-	fmt.Fprintf(w, "</center></select></br></br>")
+	fmt.Fprintf(w, "</center></select></form></br></br>")
 	fmt.Fprintf(w, "<center><b>Random QSL Card</b></br>")
 	var randomCard int
 	randomCard = int((rand.Float64()) * float64(len(qsls)))
 	var fileName string = convertedFolder + qsls[randomCard].Front_image
 	fmt.Fprintf(w, "</br><tr><td><img src=\""+fileName+convertedType+"\" width=480 height=320 ></img></center>")
-}
-
-func getListOfCountries() []string {
-	convertedQsls := make([]PrefixLookup.QslObject, len(qsls))
-	for i := 0; i < len(qsls); i++ {
-		qsl := qsls[i]
-		var d PrefixLookup.QslObject
-		d.Callsign = qsl.Callsign
-		d.Back_image = qsl.Back_image
-		d.Date = qsl.Date
-		d.Frequency = qsl.Frequency
-		d.Front_image = qsl.Front_image
-		d.Mode = qsl.Mode
-		convertedQsls[i] = d
-	}
-	return PrefixLookup.ListCountries(convertedQsls)
-
 }
 
 func browse(w http.ResponseWriter, r *http.Request) {
@@ -80,6 +63,25 @@ func browse(w http.ResponseWriter, r *http.Request) {
 		newStart = 0
 	}
 	fmt.Fprintf(w, "<tr><td><div style=\"text-align:left\"><a href=/browse/"+strconv.Itoa(newStart/20)+">Back</a></div></td><td></td><td></td><td>  <div style=\"text-align:right\"> <a href=/browse/"+strconv.Itoa(endCard/20)+">Next</a></td></tr></table>")
+}
+
+func browseCountry(w http.ResponseWriter, r *http.Request) {
+	var cardsForCountry = listOfContactsPerCountry[strings.ToUpper(r.URL.Path[9:])]
+	fmt.Fprintf(w, "<title>"+callsign+" QSL Cards</title>")
+	fmt.Fprintf(w, "<div style=\"text-align:center\"><h1><a href=/><img src=\""+imagesFolder+logoFileName+"\" width=480 height=120></a></img></br>QSL Cards</h1></br></div>")
+
+	var numInRow int = 0
+	fmt.Fprintf(w, "<table boarder=\"1\" align=\"center\"><tr>")
+	for i := 0; i < len(cardsForCountry); i++ {
+		var call string = cardsForCountry[i].Callsign
+		fmt.Fprintf(w, "<td><div style=\"text-align:center\"><a href=/view/"+call+">"+call+"</a></br><img src=\""+resizedFolder+cardsForCountry[i].Front_image+convertedType+"\" width=100 height=60></img>  <img src=\""+resizedFolder+cardsForCountry[i].Back_image+convertedType+"\" width=100 height=60></img></div><p>     </p></td>")
+		if numInRow == 3 {
+			fmt.Fprintf(w, "</tr><tr>")
+			numInRow = 0
+		} else {
+			numInRow++
+		}
+	}
 }
 
 func displayCard(w http.ResponseWriter, r *http.Request) {
