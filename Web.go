@@ -59,7 +59,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 	randomCard = int((rand.Float64()) * float64(len(qsls)))
 	var fileName string = convertedFolder + qsls[randomCard].Front_image
 
-	t, _ := template.ParseFiles("index.html")
+	t, _ := template.ParseFiles("html/index.html")
 
 	p := &Index{Callsign: callsign,
 		ClubLogo:   imagesFolder + logoFileName,
@@ -95,7 +95,7 @@ func browse(w http.ResponseWriter, r *http.Request) {
 		newStart = 0
 	}
 
-	t, _ := template.ParseFiles("browse.html")
+	t, _ := template.ParseFiles("html/browse.html")
 
 	p := &Browse{Callsign: callsign,
 		ClubLogo: imagesFolder + logoFileName,
@@ -123,7 +123,7 @@ func browseCountry(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	t, _ := template.ParseFiles("country.html")
+	t, _ := template.ParseFiles("html/country.html")
 
 	p := &Country{Callsign: callsign,
 		ClubLogo: imagesFolder + logoFileName,
@@ -152,7 +152,7 @@ func displayCard(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	t, _ := template.ParseFiles("view.html")
+	t, _ := template.ParseFiles("html/view.html")
 
 	p := &View{Callsign: callsign,
 		ClubLogo: imagesFolder + logoFileName,
