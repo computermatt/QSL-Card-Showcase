@@ -16,6 +16,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"sort"
 	"strings"
 )
 
@@ -79,7 +80,9 @@ func ListCountries(qsls []QslObject) []string {
 		listOfCountries[i] = CountryForCallsign(qsls[i].Callsign)
 	}
 	removeDuplicates(&listOfCountries)
+	sort.Strings(listOfCountries)
 	return listOfCountries
+
 }
 
 func removeDuplicates(listOfCountries *[]string) {

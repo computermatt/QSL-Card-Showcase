@@ -13,46 +13,78 @@ package main
 
 import (
 	PrefixLookup "./PrefixLookup"
-	"fmt"
+	"html/template"
 	"math/rand"
 	"net/http"
 	"strconv"
 	"strings"
 )
 
-func index(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "<title>"+callsign+" QSL Cards</title>")
-	fmt.Fprintf(w, "<div style=\"text-align:center\"><h1><a href=/><img src=\""+imagesFolder+logoFileName+"\" width=480 height=120></a></img></br>QSL Cards</h1></br></div>")
-	fmt.Fprintf(w, "<center><b><a href=/browse>Browse QSL Cards</a></b></center>")
+type Index struct {
+	Callsign   string
+	ClubLogo   string
+	Options    template.HTML
+	RandomCard string
+	TotalCards int
+}
 
-	fmt.Fprintf(w, "</br></br><script> function disp_text() { var selected_text = document.countryForm.countryList.options[document.countryForm.countryList.selectedIndex].text; window.location.href = \"/country/\" + selected_text; } </script><center>Select Country: <form name=\"countryForm\"><select name=\"countryList\" onChange=\"disp_text()\">")
+type Browse struct {
+	Callsign string
+	ClubLogo string
+	QSLCards template.HTML
+	BackCard string
+	NextCard string
+}
+
+type Country struct {
+	Callsign string
+	ClubLogo string
+	QSLCards template.HTML
+}
+
+type View struct {
+	Callsign string
+	ClubLogo string
+	QSLCards template.HTML
+}
+
+func index(w http.ResponseWriter, r *http.Request) {
+
+	opts := ""
 	for _, element := range listOfContactedCountries {
-		fmt.Fprintf(w, "<option>"+element+"</option>")
+		opts = opts + "<option>" + element + "</option>"
 	}
 
-	fmt.Fprintf(w, "</center></select></form></br></br>")
-	fmt.Fprintf(w, "<center><b>Random QSL Card</b></br>")
 	var randomCard int
 	randomCard = int((rand.Float64()) * float64(len(qsls)))
 	var fileName string = convertedFolder + qsls[randomCard].Front_image
-	fmt.Fprintf(w, "</br><tr><td><img src=\""+fileName+convertedType+"\" width=480 height=320 ></img></center>")
+
+	t, _ := template.ParseFiles("index.html")
+
+	p := &Index{Callsign: callsign,
+		ClubLogo:   imagesFolder + logoFileName,
+		Options:    template.HTML(opts),
+		RandomCard: fileName + convertedType,
+		TotalCards: len(qsls)}
+
+	t.Execute(w, p)
+
 }
 
 func browse(w http.ResponseWriter, r *http.Request) {
 	var startCard, _ = strconv.ParseInt(r.URL.Path[8:], 0, 0)
-	fmt.Fprintf(w, "<title>"+callsign+" QSL Cards</title>")
-	fmt.Fprintf(w, "<div style=\"text-align:center\"><h1><a href=/><img src=\""+imagesFolder+logoFileName+"\" width=480 height=120></a></img></br>QSL Cards</h1></br></div>")
+
 	var endCard int = int(startCard)*20 + 20
 	if endCard > len(qsls) {
 		endCard = len(qsls)
 	}
 	var numInRow int = 0
-	fmt.Fprintf(w, "<table boarder=\"1\" align=\"center\"><tr>")
+	qslCards := ""
 	for i := int(startCard) * 20; i < endCard; i++ {
 		var call string = qsls[i].Callsign
-		fmt.Fprintf(w, "<td><div style=\"text-align:center\"><a href=/view/"+call+">"+call+"</a></br><img src=\""+resizedFolder+qsls[i].Front_image+convertedType+"\" width=100 height=60></img>  <img src=\""+resizedFolder+qsls[i].Back_image+convertedType+"\" width=100 height=60></img></div><p>     </p></td>")
+		qslCards = qslCards + "<td><div style=\"text-align:center\"><a href=/view/" + call + ">" + call + "</a></br><img src=\"" + resizedFolder + qsls[i].Front_image + convertedType + "\" width=100 height=60></img>  <img src=\"" + resizedFolder + qsls[i].Back_image + convertedType + "\" width=100 height=60></img></div><p>     </p></td>"
 		if numInRow == 3 {
-			fmt.Fprintf(w, "</tr><tr>")
+			qslCards = qslCards + "</tr><tr>"
 			numInRow = 0
 		} else {
 			numInRow++
@@ -62,46 +94,69 @@ func browse(w http.ResponseWriter, r *http.Request) {
 	if newStart <= 0 {
 		newStart = 0
 	}
-	fmt.Fprintf(w, "<tr><td><div style=\"text-align:left\"><a href=/browse/"+strconv.Itoa(newStart/20)+">Back</a></div></td><td></td><td></td><td>  <div style=\"text-align:right\"> <a href=/browse/"+strconv.Itoa(endCard/20)+">Next</a></td></tr></table>")
+
+	t, _ := template.ParseFiles("browse.html")
+
+	p := &Browse{Callsign: callsign,
+		ClubLogo: imagesFolder + logoFileName,
+		QSLCards: template.HTML(qslCards),
+		BackCard: strconv.Itoa(newStart / 20),
+		NextCard: strconv.Itoa(endCard / 20)}
+
+	t.Execute(w, p)
+
 }
 
 func browseCountry(w http.ResponseWriter, r *http.Request) {
-	var cardsForCountry = listOfContactsPerCountry[strings.ToUpper(r.URL.Path[9:])]
-	fmt.Fprintf(w, "<title>"+callsign+" QSL Cards</title>")
-	fmt.Fprintf(w, "<div style=\"text-align:center\"><h1><a href=/><img src=\""+imagesFolder+logoFileName+"\" width=480 height=120></a></img></br>QSL Cards from "+r.URL.Path[9:]+"</h1></br></div>")
 
+	var cardsForCountry = listOfContactsPerCountry[strings.ToUpper(r.URL.Path[9:])]
 	var numInRow int = 0
-	fmt.Fprintf(w, "<table boarder=\"1\" align=\"center\"><tr>")
+	qslCards := ""
 	for i := 0; i < len(cardsForCountry); i++ {
 		var call string = cardsForCountry[i].Callsign
-		fmt.Fprintf(w, "<td><div style=\"text-align:center\"><a href=/view/"+call+">"+call+"</a></br><img src=\""+resizedFolder+cardsForCountry[i].Front_image+convertedType+"\" width=100 height=60></img>  <img src=\""+resizedFolder+cardsForCountry[i].Back_image+convertedType+"\" width=100 height=60></img></div><p>     </p></td>")
+		qslCards = qslCards + "<td><div style=\"text-align:center\"><a href=/view/" + call + ">" + call + "</a></br><img src=\"" + resizedFolder + cardsForCountry[i].Front_image + convertedType + "\" width=100 height=60></img>  <img src=\"" + resizedFolder + cardsForCountry[i].Back_image + convertedType + "\" width=100 height=60></img></div><p>     </p></td>"
 		if numInRow == 3 {
-			fmt.Fprintf(w, "</tr><tr>")
+			qslCards = qslCards + "</tr><tr>"
 			numInRow = 0
 		} else {
 			numInRow++
 		}
 	}
+
+	t, _ := template.ParseFiles("country.html")
+
+	p := &Country{Callsign: callsign,
+		ClubLogo: imagesFolder + logoFileName,
+		QSLCards: template.HTML(qslCards)}
+
+	t.Execute(w, p)
 }
 
 func displayCard(w http.ResponseWriter, r *http.Request) {
 	var callToCheck string = strings.ToUpper(r.URL.Path[6:])
-	fmt.Fprintf(w, "<title>"+callToCheck+"</title>")
-	fmt.Fprintf(w, "<div style=\"text-align:center\"><a href=/><img src=\""+imagesFolder+logoFileName+"\" width=320 height=80></img></a>")
+	qslCards := ""
 	for i := 0; i < len(qsls); i++ {
 		if qsls[i].Callsign == callToCheck {
-			fmt.Fprintf(w, "<u><h1>"+qsls[i].Callsign+"</h1></u>")
-			fmt.Fprintf(w, "<b>Country: "+PrefixLookup.CountryForCallsign(qsls[i].Callsign))
-			fmt.Fprintf(w, "</br>Date: "+qsls[i].Date)
-			fmt.Fprintf(w, "</br>Mode: "+qsls[i].Mode)
-			fmt.Fprintf(w, "</br>Frequency: "+qsls[i].Frequency+"</b>")
+			qslCards = qslCards + "<u><h1>" + qsls[i].Callsign + "</h1></u>"
+			qslCards = qslCards + "<b>Country: " + PrefixLookup.CountryForCallsign(qsls[i].Callsign)
+			qslCards = qslCards + "</br>Date: " + qsls[i].Date
+			qslCards = qslCards + "</br>Mode: " + qsls[i].Mode
+			qslCards = qslCards + "</br>Frequency: " + qsls[i].Frequency + "</b>"
 			var fileName string = convertedFolder + qsls[i].Front_image
-			fmt.Fprintf(w, "</br><table boarder=\"1\" align=\"center\"><tr><td><img src=\""+fileName+convertedType+"\" width=480 height=320 ></img>")
-			fmt.Fprintf(w, "</br><div style=\"text-align:center\"><a href="+cardsFolder+qsls[i].Front_image+fullType+"> Download full sized image </a></div></td><td>")
+			qslCards = qslCards + "</br><table boarder=\"1\" align=\"center\"><tr><td><img src=\"" + fileName + convertedType + "\" width=480 height=320 ></img>"
+			qslCards = qslCards + "</br><div style=\"text-align:center\"><a href=" + cardsFolder + qsls[i].Front_image + fullType + "> Download full sized image </a></div></td><td>"
 			var backName string = "../" + convertedFolder + qsls[i].Back_image
-			fmt.Fprintf(w, "<img src=\""+backName+convertedType+"\" width=480 height=320></img>")
-			fmt.Fprintf(w, "</br><div style=\"text-align:center\"><a href=../"+cardsFolder+qsls[i].Back_image+fullType+"> Download full sized image </a></div></td></tr>")
-			fmt.Fprintf(w, "</table></br>")
+			qslCards = qslCards + "<img src=\"" + backName + convertedType + "\" width=480 height=320></img>"
+			qslCards = qslCards + "</br><div style=\"text-align:center\"><a href=../" + cardsFolder + qsls[i].Back_image + fullType + "> Download full sized image </a></div></td></tr>"
+			qslCards = qslCards + "</table></br>"
 		}
 	}
+
+	t, _ := template.ParseFiles("view.html")
+
+	p := &View{Callsign: callsign,
+		ClubLogo: imagesFolder + logoFileName,
+		QSLCards: template.HTML(qslCards)}
+
+	t.Execute(w, p)
 }
