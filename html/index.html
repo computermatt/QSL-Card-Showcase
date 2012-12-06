@@ -1,18 +1,17 @@
 	<title>  {{.Callsign}} QSL Cards</title>
-	<div style="text-align:center">
-		<h1>
-			<a href=/>
-		<img src="{{.ClubLogo}}" width=480 height=120>
-			</a>
-		</img>
+	<link rel="stylesheet" type="text/css" href="/html/style.css" />
+	<div class="content">
+	<head>
+			<a href=/><img src="{{.ClubLogo}}" width=320 height=80></a></img>
 		</br>
-	QSL Cards
-		</h1>
+
 		</br>
-		</div>
+	
+	</head>
 	<center><b><a href=/browse>Browse QSL Cards</a></b></center>
 
 	</br></br>
+
 	<script> 
 	function disp_text() { 
 		var selected_text = document.countryForm.countryList.options[document.countryForm.countryList.selectedIndex].text; 
@@ -26,5 +25,10 @@
 	</form>
 	</br></br>
 	<center><b>Random QSL Card</b></br>
-	</br><tr><td><img src="{{.RandomCard}}" width=480 height=320 ></img></center>
+	</br><tr><td><a href=/view/{{.RandomCall}}><img src="{{.RandomCard}}" width=480 height=320 ></img></a></center>
 	</br></br></br></br>Number of Cards Currently in Database:  {{.TotalCards}}
+</div>
+
+
+
+

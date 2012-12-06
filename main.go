@@ -59,6 +59,8 @@ func main() {
 		http.FileServer(http.Dir(path.Join(rootdir, cardsFolder)))))
 	http.Handle("/images/", http.StripPrefix("/images",
 		http.FileServer(http.Dir(path.Join(rootdir, imagesFolder)))))
+	http.Handle("/html/", http.StripPrefix("/html",
+		http.FileServer(http.Dir(path.Join(rootdir, "/html")))))
 
 	http.HandleFunc("/", index)
 	http.HandleFunc("/browse/", browse)

@@ -1,0 +1,98 @@
+body{
+background-color: #F36E21;
+}
+
+h1{
+	background-color: #FFFFFF;
+}
+
+.header{
+font-family: Courier New, serif;
+color: #FFFFFF;
+font-size: 250%;
+font-weight: bold;
+text-align: center;
+padding-top: 0em;
+}
+.content{
+font-family: Helvetica, Sans-serif;
+background-color: #FFFFFF;
+color: #000000;
+border-radius: 15px;
+padding-left: 10px;
+padding-right: 10px;
+padding-top: 10px;
+padding-bottom: 10px;
+overflow: auto;
+}
+.container{
+max-width: 800px;
+padding-top: 0em;
+margin-left: auto;
+margin-right: auto;
+}
+.map{
+text-align: center;
+border-style: solid;
+border-color: #513127;
+border-width: 1px;
+max-width: 640px;
+margin-left: auto;
+margin-right: auto;
+overflow: hidden;
+}
+#navbar span{
+display: inline;
+}
+
+#navbar span a{
+margin-left: 0.25em;
+margin-right: 0.25em;
+padding-left: 0.25em;
+padding-right: 0.25em;
+}
+
+#navbar span a:link{
+background-color: #F36E21;
+color: #FFFFFF;
+text-decoration: none;
+}
+
+/*.inactivetab a:link{
+color: #FFFFFF;
+
+}*/
+#navbar span a:visited{
+background-color: #F36E21;
+color: #FFFFFF;
+text-decoration: none;
+}
+
+#navbar span a:hover{
+color: #F36E21;
+text-decoration: none;
+background-color: #FFFFFF;
+}
+
+#navbar span a#current{
+background-color: #FFFFFF;
+text-decoration: none;
+color: #000000;
+}
+
+#navbar{
+text-align: center;
+font-size: 1.5em;
+font-family: Courier New, monospace;
+font-weight: normal;
+margin-left: auto;
+margin-right: auto;
+overflow-y: auto;
+}
+
+.footer{
+color: #FFFFFF;
+font-family: Courier New, monospace;
+text-align: center;
+margin-top: 0.5em;
+}

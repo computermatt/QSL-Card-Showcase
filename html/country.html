@@ -1,7 +1,10 @@
 	<title>{{.Callsign}} QSL Cards</title>
-	<div style="text-align:center"><h1><a href=/><img src="{{.ClubLogo}}" width=480 height=120></a></img></br>QSL Cards</h1></br></div>
+	<link rel="stylesheet" type="text/css" href="/html/style.css" />
+		<div class="content">
+	<a href=/><img src="{{.ClubLogo}}" width=320 height=80></a></img></br></br>
 
 	<table boarder="1" align="center">
 	{{.QSLCards}}
 
 	</table>
+</div>

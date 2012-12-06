@@ -26,6 +26,7 @@ type Index struct {
 	Options    template.HTML
 	RandomCard string
 	TotalCards int
+	RandomCall string
 }
 
 type Browse struct {
@@ -61,11 +62,14 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 	t, _ := template.ParseFiles("html/index.html")
 
+	//RANDOM CARD NEEDS A LINK TO THE CARD
+
 	p := &Index{Callsign: callsign,
 		ClubLogo:   imagesFolder + logoFileName,
 		Options:    template.HTML(opts),
 		RandomCard: fileName + convertedType,
-		TotalCards: len(qsls)}
+		TotalCards: len(qsls),
+		RandomCall: qsls[randomCard].Callsign}
 
 	t.Execute(w, p)
 
@@ -137,13 +141,13 @@ func displayCard(w http.ResponseWriter, r *http.Request) {
 	qslCards := ""
 	for i := 0; i < len(qsls); i++ {
 		if qsls[i].Callsign == callToCheck {
-			qslCards = qslCards + "<u><h1>" + qsls[i].Callsign + "</h1></u>"
-			qslCards = qslCards + "<b>Country: " + PrefixLookup.CountryForCallsign(qsls[i].Callsign)
+			qslCards = qslCards + "<table boarder=\"1\" align=\"center\"><td><div style=\"text-align:left\"><h1>" + qsls[i].Callsign + "</h1>"
+			qslCards = qslCards + "<b><Country: " + PrefixLookup.CountryForCallsign(qsls[i].Callsign)
 			qslCards = qslCards + "</br>Date: " + qsls[i].Date
 			qslCards = qslCards + "</br>Mode: " + qsls[i].Mode
-			qslCards = qslCards + "</br>Frequency: " + qsls[i].Frequency + "</b>"
+			qslCards = qslCards + "</br>Frequency: " + qsls[i].Frequency + "</b></td></div>"
 			var fileName string = convertedFolder + qsls[i].Front_image
-			qslCards = qslCards + "</br><table boarder=\"1\" align=\"center\"><tr><td><img src=\"" + fileName + convertedType + "\" width=480 height=320 ></img>"
+			qslCards = qslCards + "</br><tr><td><img src=\"" + fileName + convertedType + "\" width=480 height=320 ></img>"
 			qslCards = qslCards + "</br><div style=\"text-align:center\"><a href=" + cardsFolder + qsls[i].Front_image + fullType + "> Download full sized image </a></div></td><td>"
 			var backName string = "../" + convertedFolder + qsls[i].Back_image
 			qslCards = qslCards + "<img src=\"" + backName + convertedType + "\" width=480 height=320></img>"
