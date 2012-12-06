@@ -18,10 +18,11 @@
 		window.location.href = "/country/" + selected_text; 
 		}
 	</script>
-	<center>Select Country: <form name="countryForm"><select name="countryList" onChange="disp_text()">
+	<center><form name="countryForm">Select Country: <select name="countryList">
 		 {{.Options}}
 	</center>
 	</select>
+	<button onclick="disp_text()" type="button">Ok</button>
 	</form>
 	</br></br>
 	<center><b>Random QSL Card</b></br>

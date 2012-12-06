@@ -147,10 +147,10 @@ func displayCard(w http.ResponseWriter, r *http.Request) {
 			qslCards = qslCards + "</br>Mode: " + qsls[i].Mode
 			qslCards = qslCards + "</br>Frequency: " + qsls[i].Frequency + "</b></td></div>"
 			var fileName string = convertedFolder + qsls[i].Front_image
-			qslCards = qslCards + "</br><tr><td><img src=\"" + fileName + convertedType + "\" width=480 height=320 ></img>"
+			qslCards = qslCards + "</br><tr><td><a href=\"" + fileName + convertedType + "\"><img src=\"" + fileName + convertedType + "\" width=480 height=320 ></img></a>"
 			qslCards = qslCards + "</br><div style=\"text-align:center\"><a href=" + cardsFolder + qsls[i].Front_image + fullType + "> Download full sized image </a></div></td><td>"
 			var backName string = "../" + convertedFolder + qsls[i].Back_image
-			qslCards = qslCards + "<img src=\"" + backName + convertedType + "\" width=480 height=320></img>"
+			qslCards = qslCards + "<a href=\"" + backName + convertedType + "\"><img src=\"" + backName + convertedType + "\" width=480 height=320></img></a>"
 			qslCards = qslCards + "</br><div style=\"text-align:center\"><a href=../" + cardsFolder + qsls[i].Back_image + fullType + "> Download full sized image </a></div></td></tr>"
 			qslCards = qslCards + "</table></br>"
 		}
